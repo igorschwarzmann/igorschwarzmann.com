@@ -463,43 +463,28 @@
 </head>
 <body>
 
-  <!-- NAME SECTION -->
-  <section class="name-section">
-    <h1 class="name-section__name">Igor Schwarzmann</h1>
-    <p class="name-section__tagline">Research & Strategy</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__top">
+      <span class="hero__name">Igor Schwarzmann</span>
+      <a href="mailto:hello@igorschwarzmann.com" class="hero__contact">contact me</a>
+    </div>
+
+    <div class="hero__statements">
+      <h1 class="hero__statement">Researcher & Strategist</h1>
+      <p class="hero__statement">Decoding Culture & Tech</p>
+      <p class="hero__statement">Building Advantage</p>
+    </div>
+
+    <div class="hero__meta">
+      <p class="hero__meta-line">15 years across Health, Automotive, Luxury, FMCG & Finance</p>
+      <p class="hero__meta-line">Europe, US & Asia</p>
+    </div>
   </section>
 
   <!-- MANIFESTO STRIP -->
   <section class="manifesto-strip">
     <p class="manifesto-strip__text">Everything to someone. Not something to everyone.</p>
-  </section>
-
-  <!-- TERRITORY (Positioning + Venn diagram) -->
-  <section class="territory">
-    <div class="territory__content">
-      <div class="territory__text">
-        <div class="territory__block">
-          <p class="territory__label">Positioning</p>
-          <p class="territory__value">Culture. Technology.<br>Pattern recognition.</p>
-        </div>
-      </div>
-
-      <div class="territory__diagram">
-        <div class="venn">
-          <div class="venn__circle venn__circle--top"></div>
-          <div class="venn__circle venn__circle--bottom"></div>
-          <div class="venn__circle venn__circle--left"></div>
-          <div class="venn__circle venn__circle--right"></div>
-
-          <span class="venn__label venn__label--top">Culture</span>
-          <span class="venn__label venn__label--bottom">Tech</span>
-          <span class="venn__label venn__label--left">Decoding</span>
-          <span class="venn__label venn__label--right">Building</span>
-
-          <div class="venn__burst"></div>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- WORK -->
@@ -575,7 +560,7 @@
       });
     }, observerOptions);
 
-    document.querySelectorAll('.territory__block, .territory__diagram, .work-header, .card, .footer-content').forEach(el => {
+    document.querySelectorAll('.work-header, .card, .footer-content').forEach(el => {
       observer.observe(el);
     });
   </script>
