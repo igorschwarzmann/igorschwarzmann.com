@@ -150,8 +150,9 @@
       letter-spacing: -0.02em;
     }
 
-    /* Bottom: meta info */
+    /* Meta info - sits below statements */
     .hero__meta {
+      margin-top: var(--space-lg);
       display: flex;
       flex-direction: column;
       gap: var(--space-xs);
@@ -159,10 +160,10 @@
 
     .hero__meta-line {
       font-family: var(--font-body);
-      font-size: var(--text-caption);
+      font-size: clamp(14px, 2vw, 18px);
       font-weight: 400;
-      color: rgba(255, 255, 255, 0.5);
-      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.01em;
     }
 
     /* Hero animations */
@@ -497,11 +498,11 @@
       <h1 class="hero__statement">Researcher & Strategist</h1>
       <p class="hero__statement">Decoding Culture & Tech</p>
       <p class="hero__statement">Building Advantage</p>
-    </div>
 
-    <div class="hero__meta">
-      <p class="hero__meta-line">15 years across Health, Automotive, Luxury, FMCG & Finance</p>
-      <p class="hero__meta-line">Europe, US & Asia</p>
+      <div class="hero__meta">
+        <p class="hero__meta-line">15 years across Health, Automotive, Luxury, FMCG & Finance</p>
+        <p class="hero__meta-line">Europe, US & Asia</p>
+      </div>
     </div>
   </section>
 
