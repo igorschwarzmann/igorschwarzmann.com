@@ -111,114 +111,40 @@
       animation: fadeInUp 0.7s var(--ease-out-expo) 0.4s forwards;
     }
 
-    /* ===== TERRITORY DIAGRAM ===== */
-    .territory-diagram {
+    /* ===== HERO IMAGE ===== */
+    .hero-image-container {
       position: relative;
-      width: 420px;
-      height: 420px;
+      width: 100%;
+      max-width: 900px;
+      border-radius: 4px;
+      overflow: hidden;
       opacity: 0;
       animation: fadeIn 1s var(--ease-out-expo) 0.6s forwards;
     }
 
-    .territory-circle {
+    .hero-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-overlay {
       position: absolute;
-      width: 200px;
-      height: 200px;
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       display: flex;
-      align-items: center;
-      justify-content: center;
+      gap: var(--space-md);
     }
 
-    .territory-circle--culture {
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .territory-circle--tech {
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .territory-circle--decoding {
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .territory-circle--building {
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .territory-label {
-      font-family: var(--font-body);
-      font-size: var(--text-caption);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: rgba(255, 255, 255, 0.5);
-      position: absolute;
-    }
-
-    .territory-label--culture {
-      top: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .territory-label--tech {
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .territory-label--decoding {
-      left: 30px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .territory-label--building {
-      right: 30px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .territory-burst {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, var(--color-volt) 0%, rgba(226, 255, 0, 0.4) 40%, transparent 70%);
-      border-radius: 50%;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      animation: pulse 2.5s ease-in-out infinite;
-    }
-
-    .territory-center-label {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      font-family: var(--font-body);
-      font-size: 10px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: rgba(255, 255, 255, 0.7);
-      white-space: nowrap;
-      z-index: 1;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    .hero-overlay-text {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 12vw, 120px);
+      font-weight: 700;
+      color: var(--color-volt);
+      text-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
+      line-height: 0.9;
     }
 
     /* Scroll indicator */
@@ -514,24 +440,13 @@
         min-height: 90vh;
       }
 
-      .territory-diagram {
-        width: 300px;
-        height: 300px;
+      .hero-image-container {
+        max-width: 100%;
       }
 
-      .territory-circle {
-        width: 140px;
-        height: 140px;
+      .hero-overlay-text {
+        font-size: clamp(32px, 10vw, 60px);
       }
-
-      .territory-label {
-        font-size: 9px;
-      }
-
-      .territory-label--culture { top: 15px; }
-      .territory-label--tech { bottom: 15px; }
-      .territory-label--decoding { left: 10px; }
-      .territory-label--building { right: 10px; }
 
       .philosophy-content {
         grid-template-columns: 1fr;
@@ -572,7 +487,7 @@
 
       .hero-name,
       .hero-tagline,
-      .territory-diagram,
+      .hero-image-container,
       .philosophy-block,
       .work-header,
       .card,
@@ -590,19 +505,12 @@
     <h1 class="hero-name">Igor Schwarzmann</h1>
     <p class="hero-tagline">Research & Strategy</p>
 
-    <div class="territory-diagram">
-      <div class="territory-circle territory-circle--culture"></div>
-      <div class="territory-circle territory-circle--tech"></div>
-      <div class="territory-circle territory-circle--decoding"></div>
-      <div class="territory-circle territory-circle--building"></div>
-
-      <span class="territory-label territory-label--culture">Culture</span>
-      <span class="territory-label territory-label--tech">Tech</span>
-      <span class="territory-label territory-label--decoding">Decoding</span>
-      <span class="territory-label territory-label--building">Building</span>
-
-      <div class="territory-burst"></div>
-      <span class="territory-center-label">Pattern Recognition</span>
+    <div class="hero-image-container">
+      <img src="images/hero.jpg" alt="Igor Schwarzmann" class="hero-image">
+      <div class="hero-overlay">
+        <span class="hero-overlay-text">"THE</span>
+        <span class="hero-overlay-text">NEW"</span>
+      </div>
     </div>
 
     <div class="scroll-indicator">
