@@ -97,13 +97,12 @@
 
     /* ===== HERO SECTION (full viewport) ===== */
     .hero {
-      min-height: 100vh;
       background: var(--color-black);
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      gap: var(--space-md);
-      padding: var(--space-md) var(--space-lg) 0;
+      gap: var(--space-lg);
+      padding: var(--space-lg) var(--space-lg) var(--space-lg);
       position: relative;
     }
 
@@ -254,8 +253,8 @@
     /* Small screens (mobile) */
     @media (max-width: 768px) {
       .hero {
-        padding: var(--space-md) var(--space-md) 0;
-        gap: var(--space-sm);
+        padding: var(--space-md) var(--space-md) var(--space-md);
+        gap: var(--space-md);
       }
 
       .hero__top {
