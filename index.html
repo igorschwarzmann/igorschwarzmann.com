@@ -105,6 +105,12 @@
       position: relative;
     }
 
+    .manifesto-strip__wrapper {
+      display: flex;
+      animation: marquee 30s linear infinite;
+      will-change: transform;
+    }
+
     .manifesto-strip__text {
       font-family: var(--font-display);
       font-size: clamp(20px, 4.5vw, 64px);
@@ -113,16 +119,16 @@
       text-transform: uppercase;
       line-height: 1;
       white-space: nowrap;
-      animation: marquee 20s linear infinite;
-      padding-right: 100vw;
+      padding: 0 2rem;
+      flex-shrink: 0;
     }
 
     @keyframes marquee {
       0% {
-        transform: translateX(100%);
+        transform: translateX(0);
       }
       100% {
-        transform: translateX(-100%);
+        transform: translateX(-50%);
       }
     }
 
@@ -356,11 +362,7 @@
       }
 
       .manifesto-strip {
-        padding: var(--space-md) var(--space-xs);
-      }
-
-      .manifesto-strip__text {
-        font-size: clamp(13px, 3.8vw, 28px);
+        padding: var(--space-sm) 0;
       }
 
       .impressum {
@@ -398,10 +400,13 @@
         transform: none;
       }
 
-      .manifesto-strip__text {
+      .manifesto-strip__wrapper {
         animation: none;
-        padding-right: 0;
         transform: none;
+      }
+
+      .manifesto-strip__text:nth-child(2) {
+        display: none;
       }
     }
   </style>
@@ -429,7 +434,10 @@
 
   <!-- MANIFESTO STRIP -->
   <section class="manifesto-strip">
-    <p class="manifesto-strip__text">EVERYTHING TO SOMEONE NOT SOMETHING TO EVERYONE</p>
+    <div class="manifesto-strip__wrapper">
+      <p class="manifesto-strip__text">EVERYTHING TO SOMEONE NOT SOMETHING TO EVERYONE</p>
+      <p class="manifesto-strip__text">EVERYTHING TO SOMEONE NOT SOMETHING TO EVERYONE</p>
+    </div>
   </section>
 
   <!-- IMPRESSUM -->
