@@ -98,18 +98,11 @@
     /* ===== MANIFESTO STRIP ===== */
     .manifesto-strip {
       background: var(--color-shift);
-      padding: var(--space-sm) var(--space-lg);
-      overflow-x: auto;
-      overflow-y: hidden;
+      padding: var(--space-sm) 0;
+      overflow: hidden;
       display: flex;
-      justify-content: center;
       align-items: center;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .manifesto-strip::-webkit-scrollbar {
-      display: none;
+      position: relative;
     }
 
     .manifesto-strip__text {
@@ -118,10 +111,19 @@
       font-weight: 800;
       color: var(--color-white);
       text-transform: uppercase;
-      text-align: center;
       line-height: 1;
       white-space: nowrap;
-      flex-shrink: 0;
+      animation: marquee 20s linear infinite;
+      padding-right: 100vw;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
     }
 
     /* ===== HERO SECTION (full viewport) ===== */
@@ -393,6 +395,12 @@
       .hero__statement,
       .hero__meta {
         opacity: 1;
+        transform: none;
+      }
+
+      .manifesto-strip__text {
+        animation: none;
+        padding-right: 0;
         transform: none;
       }
     }
