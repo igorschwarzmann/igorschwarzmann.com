@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Evolution of Design Systems: Full Circle | Igor Schwarzmann</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Darker+Grotesque:wght@300..900&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       DESIGN TOKENS
+       ============================================ */
+    :root {
+      /* Colors */
+      --color-volt: #E2FF00;
+      --color-signal: #00FF00;
+      --color-shift: #FF00FF;
+      --color-white: #FFFFFF;
+      --color-black: #000000;
+      --color-blush: #F5F0EB;
+      --color-gray: #888888;
+      --color-gray-light: #E5E5E5;
+
+      /* Typography */
+      --font-display: 'Darker Grotesque', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+
+      /* Type Scale */
+      --text-hero: clamp(56px, 10vw, 120px);
+      --text-display: clamp(40px, 6vw, 72px);
+      --text-title: clamp(28px, 4vw, 48px);
+      --text-lead: clamp(18px, 2.5vw, 28px);
+      --text-body: clamp(16px, 1.5vw, 20px);
+      --text-caption: clamp(11px, 1vw, 14px);
+
+      /* Spacing */
+      --space-xs: 8px;
+      --space-sm: 16px;
+      --space-md: 24px;
+      --space-lg: 48px;
+      --space-xl: 96px;
+
+      /* Animation */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* ============================================
+       RESET & BASE
+       ============================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      height: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: 1.5;
+      color: var(--color-black);
+      background: var(--color-white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      line-height: 1.0;
+    }
+
+    p {
+      max-width: 55ch;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ============================================
+       SLIDE BASE
+       ============================================ */
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      scroll-snap-align: start;
+      overflow: hidden;
+    }
+
+    .slide--working {
+      min-height: 90vh;
+    }
+
+    /* ============================================
+       THE FRAME
+       ============================================ */
+    .frame {
+      --frame-opacity: 0.5;
+    }
+
+    .frame__corner {
+      position: absolute;
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: var(--frame-opacity);
+    }
+
+    .frame__corner--tl {
+      top: var(--space-md);
+      left: var(--space-lg);
+    }
+
+    .frame__corner--tr {
+      top: var(--space-md);
+      right: var(--space-lg);
+    }
+
+    .frame__corner--bl {
+      bottom: var(--space-md);
+      left: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .frame__corner--bl::before,
+    .frame__corner--bl::after {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .frame__corner--br {
+      bottom: var(--space-md);
+      right: var(--space-lg);
+    }
+
+    /* Dark slide frame */
+    .slide--dark .frame__corner {
+      color: var(--color-white);
+    }
+
+    /* ============================================
+       BACKGROUNDS
+       ============================================ */
+    .bg-white { background: var(--color-white); color: var(--color-black); }
+    .bg-black { background: var(--color-black); color: var(--color-white); }
+    .bg-blush { background: var(--color-blush); color: var(--color-black); }
+    .bg-volt { background: var(--color-volt); color: var(--color-black); }
+    .bg-signal { background: var(--color-signal); color: var(--color-black); }
+    .bg-shift { background: var(--color-shift); color: var(--color-white); }
+
+    /* ============================================
+       TYPOGRAPHY UTILITIES
+       ============================================ */
+    .text-hero {
+      font-family: var(--font-display);
+      font-size: var(--text-hero);
+      font-weight: 800;
+      line-height: 0.95;
+      max-width: 18ch;
+    }
+
+    .text-display {
+      font-family: var(--font-display);
+      font-size: var(--text-display);
+      font-weight: 700;
+      line-height: 1.0;
+      max-width: 20ch;
+    }
+
+    .text-title {
+      font-family: var(--font-display);
+      font-size: var(--text-title);
+      font-weight: 600;
+      line-height: 1.1;
+      max-width: 22ch;
+    }
+
+    .text-lead {
+      font-size: var(--text-lead);
+      line-height: 1.45;
+      max-width: 55ch;
+    }
+
+    .text-caption {
+      font-size: var(--text-caption);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+    }
+
+    .highlight-volt {
+      background: var(--color-volt);
+      padding: 0 0.15em;
+    }
+
+    .highlight-shift {
+      background: var(--color-shift);
+      color: var(--color-white);
+      padding: 0 0.15em;
+    }
+
+    /* ============================================
+       LAYOUT PATTERNS
+       ============================================ */
+
+    /* Hero Statement */
+    .slide--hero .slide__content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100%;
+      padding-bottom: var(--space-xl);
+    }
+
+    /* Split Panel 40/60 */
+    .split {
+      display: grid;
+      grid-template-columns: 40% 60%;
+      gap: var(--space-lg);
+      align-items: center;
+      height: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .split--reverse {
+      grid-template-columns: 60% 40%;
+    }
+
+    .split__left,
+    .split__right {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    /* Centered Content */
+    .centered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100%;
+      gap: var(--space-md);
+    }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      gap: var(--space-md);
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .grid--3col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid--2col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* ============================================
+       TIMELINE CIRCLE
+       ============================================ */
+    .timeline-circle {
+      position: relative;
+      width: min(400px, 80vw);
+      height: min(400px, 80vw);
+      margin: var(--space-lg) auto;
+    }
+
+    .timeline-circle__arc {
+      position: absolute;
+      inset: 0;
+      border: 2px solid var(--color-black);
+      border-radius: 50%;
+      clip-path: var(--clip-arc, circle(50%));
+    }
+
+    .timeline-circle__marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .timeline-circle__marker--active {
+      background: var(--color-volt);
+      box-shadow: 0 0 20px var(--color-volt);
+    }
+
+    .timeline-circle__marker--past {
+      background: var(--color-gray);
+      opacity: 0.5;
+    }
+
+    .timeline-circle__marker--future {
+      background: transparent;
+      border: 1px solid var(--color-gray);
+      opacity: 0.4;
+    }
+
+    .timeline-circle__label {
+      position: absolute;
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      font-weight: 600;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ============================================
+       DIAGRAM: GAP CIRCLES
+       ============================================ */
+    .gap-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: var(--space-lg);
+    }
+
+    .gap-diagram--closed {
+      gap: 0;
+    }
+
+    .gap-circle {
+      width: 180px;
+      height: 180px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: var(--text-body);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .gap-diagram--closed .gap-circle {
+      border-color: var(--color-white);
+    }
+
+    .gap-diagram__burst {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, var(--color-volt) 0%, transparent 70%);
+      border-radius: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+    }
+
+    /* ============================================
+       DIAGRAM: CASCADE / VERTICAL STACK
+       ============================================ */
+    .cascade {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      max-width: 500px;
+    }
+
+    .cascade__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      border-left: 4px solid var(--border-color, var(--color-gray));
+      background: var(--bg-color, rgba(0,0,0,0.03));
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+
+    .cascade__item--gray { --border-color: var(--color-gray); --bg-color: rgba(128,128,128,0.1); }
+    .cascade__item--volt { --border-color: var(--color-volt); --bg-color: rgba(226,255,0,0.15); }
+    .cascade__item--signal { --border-color: var(--color-signal); --bg-color: rgba(0,255,0,0.1); }
+    .cascade__item--shift { --border-color: var(--color-shift); --bg-color: rgba(255,0,255,0.1); }
+
+    /* ============================================
+       DIAGRAM: FLOW
+       ============================================ */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .flow__step {
+      padding: var(--space-sm) var(--space-md);
+      border: 2px solid currentColor;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: var(--text-caption);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .flow__step--active {
+      background: var(--color-volt);
+      border-color: var(--color-volt);
+      color: var(--color-black);
+    }
+
+    .flow__arrow {
+      font-size: 24px;
+      opacity: 0.4;
+    }
+
+    /* ============================================
+       EVIDENCE CONTAINER
+       ============================================ */
+    .evidence {
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+
+    .evidence img {
+      width: 100%;
+      height: auto;
+    }
+
+    .evidence__caption {
+      font-size: var(--text-caption);
+      padding: var(--space-xs) 0;
+      opacity: 0.6;
+    }
+
+    /* ============================================
+       TABLE
+       ============================================ */
+    .comparison-table {
+      width: 100%;
+      max-width: 800px;
+      border-collapse: collapse;
+      font-family: var(--font-body);
+    }
+
+    .comparison-table th {
+      text-align: left;
+      padding: var(--space-sm);
+      font-weight: 600;
+      border-bottom: 2px solid currentColor;
+    }
+
+    .comparison-table th:first-child {
+      background: rgba(226,255,0,0.2);
+    }
+
+    .comparison-table th:last-child {
+      background: rgba(255,0,255,0.15);
+    }
+
+    .comparison-table td {
+      padding: var(--space-sm);
+      border-bottom: 1px solid var(--color-gray-light);
+      vertical-align: top;
+    }
+
+    /* ============================================
+       QUOTE
+       ============================================ */
+    .quote {
+      font-family: var(--font-display);
+      font-size: var(--text-lead);
+      font-weight: 500;
+      line-height: 1.4;
+      max-width: 50ch;
+      font-style: italic;
+    }
+
+    .quote::before {
+      content: '"';
+    }
+
+    .quote::after {
+      content: '"';
+    }
+
+    .quote__attribution {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      font-style: normal;
+      margin-top: var(--space-sm);
+      opacity: 0.6;
+    }
+
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.8s var(--ease-out-expo) both;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+
+    /* ============================================
+       RIPPLE DIAGRAM
+       ============================================ */
+    .ripple {
+      position: relative;
+      width: 320px;
+      height: 320px;
+    }
+
+    .ripple__ring {
+      position: absolute;
+      border: 1px solid var(--color-black);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ripple__ring--outer {
+      inset: 0;
+    }
+
+    .ripple__ring--middle {
+      inset: 50px;
+    }
+
+    .ripple__ring--inner {
+      inset: 100px;
+    }
+
+    .ripple__center {
+      position: absolute;
+      inset: 130px;
+      background: var(--color-volt);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .ripple__label {
+      position: absolute;
+      font-family: var(--font-body);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       SCALE COMPARISON
+       ============================================ */
+    .scale-compare {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+    }
+
+    .scale-compare__before {
+      opacity: 0.4;
+    }
+
+    .scale-compare__dot {
+      width: 24px;
+      height: 24px;
+      background: var(--color-volt);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scale-compare__label {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      text-align: center;
+      margin-top: var(--space-sm);
+    }
+
+    /* ============================================
+       IMAGE ROW
+       ============================================ */
+    .image-row {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .image-row__item {
+      flex: 0 1 280px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    /* ============================================
+       FLOATING IMAGE (for hero slides)
+       ============================================ */
+    .floating-image {
+      position: absolute;
+      bottom: var(--space-xl);
+      right: var(--space-lg);
+      width: 200px;
+    }
+
+    /* ============================================
+       MOBILE HELPERS
+       ============================================ */
+    .mobile-hide {
+      display: block;
+    }
+
+    .gap-marker {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,0,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .gap-marker span {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+    }
+
+    .ghosted-roles {
+      opacity: 0.15;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ghosted-roles div {
+      width: 80px;
+      height: 16px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .volt-dot {
+      width: 40px;
+      height: 40px;
+      background: var(--color-volt);
+      border-radius: 50%;
+      box-shadow: 0 0 40px var(--color-volt);
+      flex-shrink: 0;
+    }
+
+    .meta-compare {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 900px) {
+      :root {
+        --space-lg: 24px;
+        --space-xl: 48px;
+      }
+
+      .slide {
+        min-height: auto;
+        padding: var(--space-lg) var(--space-md);
+        padding-top: 60px;
+        padding-bottom: 60px;
+      }
+
+      .slide--working {
+        min-height: auto;
+      }
+
+      /* Ensure content flows properly */
+      .centered {
+        height: auto;
+        min-height: 80vh;
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+        height: auto;
+      }
+
+      .split--reverse {
+        grid-template-columns: 1fr;
+      }
+
+      .split__left,
+      .split__right {
+        width: 100%;
+      }
+
+      .grid--3col {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+      }
+
+      .grid--2col {
+        grid-template-columns: 1fr;
+      }
+
+      /* Frame adjustments */
+      .frame__corner--tl,
+      .frame__corner--tr {
+        display: none;
+      }
+
+      .frame__corner--bl,
+      .frame__corner--br {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        right: auto;
+      }
+
+      .frame__corner--bl::before,
+      .frame__corner--bl::after {
+        width: 20px;
+      }
+
+      /* Typography scaling */
+      .text-hero {
+        font-size: clamp(36px, 10vw, 56px);
+        max-width: 100%;
+      }
+
+      .text-display {
+        font-size: clamp(28px, 8vw, 40px);
+        max-width: 100%;
+      }
+
+      .text-title {
+        font-size: clamp(22px, 6vw, 32px);
+        max-width: 100%;
+      }
+
+      .text-lead {
+        font-size: clamp(16px, 4vw, 20px);
+      }
+
+      /* Diagrams */
+      .gap-diagram {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+
+      .gap-diagram--closed {
+        gap: 0;
+      }
+
+      .gap-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 14px;
+      }
+
+      .flow {
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+
+      .flow__step {
+        width: 100%;
+        text-align: center;
+        padding: var(--space-xs) var(--space-sm);
+      }
+
+      .flow__arrow {
+        transform: rotate(90deg);
+        font-size: 18px;
+      }
+
+      /* Cascade */
+      .cascade {
+        max-width: 100%;
+      }
+
+      .cascade__item {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 14px;
+      }
+
+      /* Images */
+      .image-row {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .image-row__item {
+        flex: none;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .evidence {
+        max-width: 100%;
+      }
+
+      /* Timeline SVG */
+      .timeline-circle,
+      svg.timeline-circle {
+        width: min(250px, 70vw) !important;
+        height: min(250px, 70vw) !important;
+      }
+
+      /* Ripple diagram */
+      .ripple {
+        width: 220px;
+        height: 220px;
+        transform: scale(0.8);
+      }
+
+      .ripple__label {
+        display: none;
+      }
+
+      /* Table */
+      .comparison-table {
+        font-size: 14px;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: var(--space-xs);
+      }
+
+      /* Quote */
+      .quote {
+        font-size: var(--text-body);
+      }
+
+      /* Hero slides with absolute images - make them flow */
+      .slide--hero {
+        min-height: auto;
+        padding-bottom: var(--space-lg);
+      }
+
+      /* Floating image converts to inline on mobile */
+      .floating-image {
+        position: relative !important;
+        bottom: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        max-width: 180px !important;
+        margin: var(--space-md) auto 0 !important;
+      }
+
+      /* Hide ghosted elements on mobile */
+      .ghosted-roles {
+        display: none;
+      }
+
+      .mobile-hide {
+        display: none;
+      }
+
+      /* Volt dot smaller on mobile */
+      .volt-dot {
+        width: 30px;
+        height: 30px;
+      }
+
+      /* Gap marker smaller */
+      .gap-marker {
+        width: 40px;
+        height: 40px;
+      }
+
+      .gap-marker span {
+        font-size: 8px;
+      }
+
+      /* Scale comparison adjustments */
+      .scale-compare {
+        gap: var(--space-md);
+        padding: var(--space-sm);
+      }
+
+      /* Meta comparison */
+      .meta-compare {
+        flex-direction: column;
+        gap: var(--space-md);
+      }
+
+      .meta-compare > span {
+        transform: rotate(90deg);
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      .slide {
+        padding: var(--space-sm);
+        padding-top: 48px;
+        padding-bottom: 48px;
+      }
+
+      .text-hero {
+        font-size: 28px;
+      }
+
+      .text-display {
+        font-size: 24px;
+      }
+
+      .text-title {
+        font-size: 20px;
+      }
+
+      .gap-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 12px;
+      }
+
+      .flow__step {
+        font-size: 11px;
+        padding: 8px 12px;
+      }
+
+      svg.timeline-circle {
+        width: 200px !important;
+        height: 200px !important;
+      }
+
+      .image-row__item {
+        max-width: 250px;
+      }
+
+      .comparison-table {
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* ============================================
+       SITE NAV (Strategy-as-Protocol family)
+       ============================================ */
+    .site-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      padding: var(--space-sm) var(--space-md);
+      pointer-events: none;
+    }
+
+    .site-nav-link {
+      font-family: var(--font-body);
+      font-size: var(--text-caption);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      color: rgba(0, 0, 0, 0.5);
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.3s var(--ease-out-expo);
+      pointer-events: auto;
+    }
+
+    .site-nav-link:hover {
+      color: var(--color-black);
+      border-color: var(--color-black);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Nav on dark backgrounds */
+    .site-nav.on-dark .site-nav-link {
+      color: rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .site-nav.on-dark .site-nav-link:hover {
+      color: var(--color-volt);
+      border-color: var(--color-volt);
+      background: rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SITE NAV -->
+  <nav class="site-nav" id="site-nav">
+    <a href="https://igorschwarzmann.com/strategyasprotocol" class="site-nav-link">Strategy-as-Protocol</a>
+  </nav>
+
+  <!-- ============================================
+       SLIDE 1: TITLE
+       ============================================ -->
+  <section class="slide bg-white" id="slide-1">
+    <div class="frame__corner frame__corner--tr">January 2026</div>
+    <div class="frame__corner frame__corner--bl">1</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h1 class="text-display animate-in">The Evolution of Design Systems</h1>
+      <p class="text-lead animate-in delay-2" style="opacity: 0.7; max-width: 45ch; text-align: center;">
+        A story of pattern recognition, institutional capture, and unexpected return.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 2: THE SETUP
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-2">
+    <div class="frame__corner frame__corner--tl">Prologue</div>
+    <div class="frame__corner frame__corner--tr">Context</div>
+    <div class="frame__corner frame__corner--bl">2</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <h2 class="text-title">Last week I published an argument. This week I'm showing you the proof.</h2>
+      </div>
+      <div class="split__right">
+        <p class="text-lead">"<a href="https://thenew.igorschwarzmann.com/p/strategy-as-protocol" target="_blank" style="color: inherit; text-decoration: none;"><span class="highlight-volt">Strategy-as-Protocol</span></a>" proposed that strategy should be written in plain language — readable by humans, executable by machines.</p>
+        <p class="text-lead">Design systems are the test case. What you're seeing right now was built that way.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 3: THE PLEDGE
+       ============================================ -->
+  <section class="slide slide--hero bg-black slide--dark" id="slide-3">
+    <div class="centered" style="gap: var(--space-lg);">
+      <h1 class="text-hero" style="color: var(--color-volt);">One architect changed how we think about design problems.</h1>
+      <div class="floating-image">
+        <div class="evidence">
+          <img src="pattern language.jpg" alt="A Pattern Language book cover">
+        </div>
+        <p class="evidence__caption" style="color: var(--color-white);">A Pattern Language, 1977</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 4: TIMELINE 1977
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-4">
+    <div class="frame__corner frame__corner--tl">Act I: The Pledge</div>
+    <div class="frame__corner frame__corner--tr">Timeline</div>
+    <div class="frame__corner frame__corner--bl">4</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-display">1977</h2>
+      <p class="text-lead" style="opacity: 0.6;">The origin point.</p>
+
+      <svg class="timeline-circle" viewBox="0 0 200 200" style="width: 300px; height: 300px;">
+        <!-- Partial arc from 12 o'clock to 3 o'clock -->
+        <path d="M 100 10 A 90 90 0 0 1 190 100" fill="none" stroke="black" stroke-width="2"/>
+        <!-- 1977 marker - 12 o'clock -->
+        <circle cx="100" cy="10" r="6" fill="#E2FF00"/>
+        <text x="100" y="-5" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="600">1977</text>
+        <!-- Future markers (faded) -->
+        <circle cx="190" cy="100" r="4" fill="none" stroke="#888" opacity="0.3"/>
+        <circle cx="150" cy="175" r="4" fill="none" stroke="#888" opacity="0.3"/>
+        <circle cx="50" cy="175" r="4" fill="none" stroke="#888" opacity="0.3"/>
+        <circle cx="15" cy="85" r="4" fill="none" stroke="#888" opacity="0.3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 5: ALEXANDER'S INSIGHT
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-5">
+    <div class="frame__corner frame__corner--tl">Act I: The Pledge</div>
+    <div class="frame__corner frame__corner--tr">The Insight</div>
+    <div class="frame__corner frame__corner--bl">5</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <blockquote class="quote">
+          Each pattern describes a problem which occurs over and over again in our environment, and then describes the core of the solution to that problem, in such a way that you can use this solution a million times over, without ever doing it the same way twice.
+          <p class="quote__attribution">— Christopher Alexander</p>
+        </blockquote>
+      </div>
+      <div class="split__right">
+        <div class="evidence">
+          <img src="christopher alexander.jpg" alt="Christopher Alexander">
+        </div>
+        <p class="evidence__caption">Christopher Alexander, architect and theorist</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 6: THE GAP
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-6">
+    <div class="frame__corner frame__corner--tl">Act I: The Pledge</div>
+    <div class="frame__corner frame__corner--tr">The Problem</div>
+    <div class="frame__corner frame__corner--bl">6</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-title" style="max-width: 30ch; text-align: center;">Somewhere between vision and shipped product, we lost the thread.</h2>
+
+      <div class="gap-diagram">
+        <div class="gap-circle">Vision</div>
+        <div class="gap-marker">
+          <span>Gap</span>
+        </div>
+        <div class="gap-circle">Execution</div>
+      </div>
+
+      <p class="text-lead" style="max-width: 50ch; text-align: center; opacity: 0.7;">
+        Alexander's language described <em>what</em> to build. Someone still had to build it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 7: TIMELINE 2006
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-7">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">Timeline</div>
+    <div class="frame__corner frame__corner--bl">7</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-display">2006</h2>
+      <p class="text-lead" style="opacity: 0.6;">The tipping point.</p>
+
+      <svg class="timeline-circle" viewBox="0 0 200 200" style="width: 300px; height: 300px;">
+        <!-- Arc from 12 o'clock to 5 o'clock -->
+        <path d="M 100 10 A 90 90 0 0 1 150 175" fill="none" stroke="black" stroke-width="2"/>
+        <!-- 1977 marker (faded) -->
+        <circle cx="100" cy="10" r="4" fill="#888" opacity="0.5"/>
+        <text x="100" y="-5" text-anchor="middle" font-family="DM Sans" font-size="9" opacity="0.5">1977</text>
+        <!-- 2006 marker - 3 o'clock -->
+        <circle cx="190" cy="100" r="6" fill="#E2FF00"/>
+        <text x="205" y="105" font-family="DM Sans" font-size="10" font-weight="600">2006</text>
+        <!-- Future markers (faded) -->
+        <circle cx="150" cy="175" r="4" fill="none" stroke="#888" opacity="0.3"/>
+        <circle cx="50" cy="175" r="4" fill="none" stroke="#888" opacity="0.3"/>
+        <circle cx="15" cy="85" r="4" fill="none" stroke="#888" opacity="0.3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 8: YAHOO'S BREAKTHROUGH
+       ============================================ -->
+  <section class="slide slide--hero bg-black slide--dark" id="slide-8">
+    <div class="frame__corner frame__corner--tl" style="color: var(--color-white);">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--bl" style="color: var(--color-white);">8</div>
+    <div class="frame__corner frame__corner--br" style="color: var(--color-white);">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="color: var(--color-white); text-align: center; max-width: 25ch;">Yahoo released something new: patterns paired with code.</h2>
+
+      <div class="flow" style="color: var(--color-white);">
+        <div class="flow__step" style="border-color: var(--color-volt); color: var(--color-volt);">Pattern Library</div>
+        <span class="flow__arrow" style="color: var(--color-volt);">+</span>
+        <div class="flow__step" style="border-color: var(--color-volt); color: var(--color-volt);">Code Library</div>
+        <span class="flow__arrow">=</span>
+        <div class="flow__step flow__step--active">Shipped Together</div>
+      </div>
+
+      <p class="text-lead" style="color: rgba(255,255,255,0.7); text-align: center; max-width: 45ch;">
+        February 2006: For the first time, specification and implementation shipped together.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 9: THE TEMPLATE
+       ============================================ -->
+  <section class="slide slide--working bg-blush frame" id="slide-9">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">The Blueprint</div>
+    <div class="frame__corner frame__corner--bl">9</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="text-align: center; max-width: 25ch;">Yahoo created the blueprint every design system would follow.</h2>
+
+      <div class="flow">
+        <div class="flow__step">Document</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Implement</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Govern</div>
+      </div>
+
+      <p class="text-lead" style="text-align: center; max-width: 50ch; opacity: 0.7;">
+        The BSD license democratized access — enterprise-grade tools became freely available. A new category was born.
+      </p>
+
+      <div class="evidence" style="max-width: 350px;">
+        <img src="yahoo.png" alt="Yahoo UI Library">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 10: TIMELINE 2014
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-10">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">Timeline</div>
+    <div class="frame__corner frame__corner--bl">10</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-display">2014</h2>
+      <p class="text-lead" style="opacity: 0.6;">The institutionalization begins.</p>
+
+      <svg class="timeline-circle" viewBox="0 0 200 200" style="width: 300px; height: 300px;">
+        <!-- Arc from 12 o'clock past 6 to 7 o'clock -->
+        <path d="M 100 10 A 90 90 0 1 1 50 175" fill="none" stroke="black" stroke-width="2"/>
+        <!-- Past markers -->
+        <circle cx="100" cy="10" r="3" fill="#888" opacity="0.4"/>
+        <circle cx="190" cy="100" r="3" fill="#888" opacity="0.5"/>
+        <!-- 2014 marker - 5 o'clock -->
+        <circle cx="150" cy="175" r="6" fill="#E2FF00"/>
+        <text x="165" y="185" font-family="DM Sans" font-size="10" font-weight="600">2014</text>
+        <!-- Future markers -->
+        <circle cx="50" cy="175" r="4" fill="none" stroke="#888" opacity="0.3"/>
+        <circle cx="15" cy="85" r="4" fill="none" stroke="#888" opacity="0.3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 11: MATERIAL DESIGN
+       ============================================ -->
+  <section class="slide slide--hero bg-signal" id="slide-11">
+    <div class="centered" style="gap: var(--space-lg);">
+      <h1 class="text-hero" style="max-width: 15ch;">Google transformed design systems from tools into strategy.</h1>
+      <div class="floating-image" style="max-width: 250px;">
+        <div class="evidence">
+          <img src="google material design.png" alt="Google Material Design">
+        </div>
+        <p class="evidence__caption">Material Design, June 2014</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 12: THE ENTERPRISE CASCADE
+       ============================================ -->
+  <section class="slide slide--working bg-black slide--dark frame" id="slide-12">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">Enterprise</div>
+    <div class="frame__corner frame__corner--bl">12</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="color: var(--color-white); text-align: center;">Every major company followed.</h2>
+
+      <div class="grid grid--3col" style="color: var(--color-white); text-align: center; gap: var(--space-xl);">
+        <div>
+          <p style="font-family: var(--font-display); font-size: var(--text-title); font-weight: 700;">Carbon</p>
+          <p class="text-caption">IBM, 2017</p>
+        </div>
+        <div>
+          <p style="font-family: var(--font-display); font-size: var(--text-title); font-weight: 700;">Fluent</p>
+          <p class="text-caption">Microsoft, 2017</p>
+        </div>
+        <div>
+          <p style="font-family: var(--font-display); font-size: var(--text-title); font-weight: 700;">Lightning</p>
+          <p class="text-caption">Salesforce, 2015</p>
+        </div>
+      </div>
+
+      <p class="text-lead" style="color: rgba(255,255,255,0.7); text-align: center; max-width: 50ch;">
+        Design systems became essential infrastructure with dedicated teams, formal governance, executive sponsorship.
+      </p>
+
+      <div class="evidence" style="max-width: 400px;">
+        <img src="enterprise design system.jpg" alt="Enterprise Design System">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 13: TIMELINE 2019
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-13">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">Timeline</div>
+    <div class="frame__corner frame__corner--bl">13</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-display">2019</h2>
+      <p class="text-lead" style="opacity: 0.6;">The ecosystem phase.</p>
+
+      <svg class="timeline-circle" viewBox="0 0 200 200" style="width: 300px; height: 300px;">
+        <!-- Arc from 12 o'clock almost full circle to 10 o'clock -->
+        <path d="M 100 10 A 90 90 0 1 1 25 60" fill="none" stroke="black" stroke-width="2"/>
+        <!-- Past markers -->
+        <circle cx="100" cy="10" r="3" fill="#888" opacity="0.3"/>
+        <circle cx="190" cy="100" r="3" fill="#888" opacity="0.4"/>
+        <circle cx="150" cy="175" r="3" fill="#888" opacity="0.5"/>
+        <!-- 2019 marker - 8 o'clock -->
+        <circle cx="50" cy="175" r="6" fill="#E2FF00"/>
+        <text x="30" y="190" font-family="DM Sans" font-size="10" font-weight="600">2019</text>
+        <!-- 2025 marker (future) -->
+        <circle cx="15" cy="85" r="4" fill="none" stroke="#888" opacity="0.4"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 14: THE MODERN APPARATUS
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-14">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">The Apparatus</div>
+    <div class="frame__corner frame__corner--bl">14</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <h2 class="text-title">Modern design systems require armies to build and maintain.</h2>
+        <p class="text-lead" style="opacity: 0.7;">What Alexander imagined one person could use now required organizational infrastructure to create.</p>
+      </div>
+      <div class="split__right">
+        <div class="cascade">
+          <div class="cascade__item cascade__item--gray">
+            <span>Design System Lead</span>
+          </div>
+          <div class="cascade__item cascade__item--gray">
+            <span>Component Designers</span>
+          </div>
+          <div class="cascade__item cascade__item--gray">
+            <span>Engineers</span>
+          </div>
+          <div class="cascade__item cascade__item--gray">
+            <span>DesignOps</span>
+          </div>
+          <div class="cascade__item cascade__item--gray">
+            <span>Governance Committees</span>
+          </div>
+          <div class="cascade__item cascade__item--gray">
+            <span>Documentation Specialists</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 15: THE INDUSTRIAL PROCESS
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-15">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">The Process</div>
+    <div class="frame__corner frame__corner--bl">15</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="text-align: center; max-width: 28ch;">Building a component now follows a five-stage factory process.</h2>
+
+      <div class="flow">
+        <div class="flow__step">Inception</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Design</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Development</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Governance</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Documentation</div>
+      </div>
+
+      <p class="text-lead" style="text-align: center; opacity: 0.6; max-width: 50ch;">
+        Each phase involves handoffs, reviews, tooling. Massive infrastructure for tiny output.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 16: THE IRONY
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-16">
+    <div class="frame__corner frame__corner--tl">Act II: The Capture</div>
+    <div class="frame__corner frame__corner--tr">The Irony</div>
+    <div class="frame__corner frame__corner--bl">16</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <h2 class="text-title">Alexander's "language anyone could use" now requires specialists to speak.</h2>
+        <p class="text-lead">
+          "<span class="highlight-volt">...a million times over, without ever doing it the same way twice.</span>"
+        </p>
+      </div>
+      <div class="split__right">
+        <div style="background: #F5F5F5; padding: var(--space-md); border-radius: 8px; font-family: monospace; font-size: 14px; line-height: 1.6;">
+          <p style="font-weight: 700; margin-bottom: 12px;">Senior Design Systems Engineer</p>
+          <p style="opacity: 0.7;">Requirements:</p>
+          <ul style="list-style: none; opacity: 0.8;">
+            <li>• 8+ years React</li>
+            <li>• 5+ years TypeScript</li>
+            <li>• Figma expertise required</li>
+            <li>• Experience with Storybook</li>
+            <li>• CI/CD pipeline knowledge</li>
+          </ul>
+        </div>
+        <p class="text-caption">The implementation gap became an organizational function with headcount, budget, and roadmap.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 17: TIMELINE 2025
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-17">
+    <div class="frame__corner frame__corner--tl">Act III: The Turn</div>
+    <div class="frame__corner frame__corner--tr">Timeline</div>
+    <div class="frame__corner frame__corner--bl">17</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-display">2025</h2>
+      <p class="text-lead" style="color: var(--color-volt); font-weight: 600;">???</p>
+
+      <svg class="timeline-circle" viewBox="0 0 200 200" style="width: 300px; height: 300px;">
+        <!-- Almost complete arc -->
+        <path d="M 100 10 A 90 90 0 1 1 85 12" fill="none" stroke="black" stroke-width="2"/>
+        <!-- Past markers -->
+        <circle cx="100" cy="10" r="3" fill="#888" opacity="0.3"/>
+        <circle cx="190" cy="100" r="3" fill="#888" opacity="0.35"/>
+        <circle cx="150" cy="175" r="3" fill="#888" opacity="0.4"/>
+        <circle cx="50" cy="175" r="3" fill="#888" opacity="0.5"/>
+        <!-- 2025 marker with question marks -->
+        <circle cx="15" cy="85" r="6" fill="#E2FF00"/>
+        <text x="-5" y="90" font-family="DM Sans" font-size="10" font-weight="600" fill="#E2FF00">???</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 18: THE TURN (HERO)
+       ============================================ -->
+  <section class="slide slide--hero bg-shift slide--dark" id="slide-18">
+    <div class="centered" style="position: relative;">
+      <h1 class="text-hero" style="color: var(--color-white); text-align: center; max-width: 18ch;">The 40-year implementation gap is closed.</h1>
+
+      <div class="gap-diagram gap-diagram--closed" style="position: relative; margin-top: var(--space-lg);">
+        <div class="gap-circle" style="border-color: var(--color-white); color: var(--color-white);">Vision</div>
+        <div class="gap-diagram__burst"></div>
+        <div class="gap-circle" style="border-color: var(--color-white); color: var(--color-white);">Execution</div>
+      </div>
+
+      <p class="text-lead" style="color: var(--color-white); opacity: 0.8; margin-top: var(--space-md);">Here's the proof.</p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 19: THE PROOF
+       ============================================ -->
+  <section class="slide slide--working bg-black slide--dark frame" id="slide-19">
+    <div class="frame__corner frame__corner--tl">Act III: The Turn</div>
+    <div class="frame__corner frame__corner--tr">The Proof</div>
+    <div class="frame__corner frame__corner--bl">19</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="color: var(--color-white); text-align: center; max-width: 28ch;">A working design system. Built alone. Not because I'm special — because the tools finally are.</h2>
+
+      <div style="display: flex; align-items: center; gap: var(--space-xl); margin: var(--space-md) 0;">
+        <!-- Ghosted roles -->
+        <div class="ghosted-roles">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+
+        <!-- Central dot -->
+        <div class="volt-dot"></div>
+
+        <!-- Ghosted roles -->
+        <div class="ghosted-roles">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+
+      <p class="text-lead" style="color: rgba(255,255,255,0.7); text-align: center; max-width: 50ch;">
+        1,253 lines of human-readable specification. Written in plain language — AI interprets it directly.
+      </p>
+
+      <div class="image-row" style="margin-top: var(--space-md);">
+        <div class="image-row__item">
+          <img src="the new design system.jpg" alt="Design System Document">
+        </div>
+        <div class="image-row__item">
+          <img src="strategy as protocol screenshot.jpg" alt="Website Output">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 20: THE SPECIFICATION
+       ============================================ -->
+  <section class="slide slide--hero bg-volt" id="slide-20">
+    <div class="centered" style="gap: var(--space-md);">
+      <p style="font-family: var(--font-display); font-size: var(--text-display); font-weight: 700; line-height: 1.2; max-width: 20ch; text-align: center;">
+        "Volt = 'This is my perspective.'
+      </p>
+      <p style="font-family: var(--font-display); font-size: var(--text-display); font-weight: 700; line-height: 1.2; max-width: 20ch; text-align: center;">
+        Signal = 'This is emerging.'
+      </p>
+      <p style="font-family: var(--font-display); font-size: var(--text-display); font-weight: 700; line-height: 1.2; max-width: 20ch; text-align: center;">
+        Shift = 'This changes everything.'"
+      </p>
+      <p class="text-lead" style="margin-top: var(--space-md); opacity: 0.7; text-align: center;">
+        The system describes principles, not pixels — and that's enough.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 21: THE EXECUTION
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-21">
+    <div class="frame__corner frame__corner--tl">Act III: The Turn</div>
+    <div class="frame__corner frame__corner--tr">Execution</div>
+    <div class="frame__corner frame__corner--bl">21</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="text-align: center; max-width: 25ch;">AI interprets the specification and generates the output.</h2>
+
+      <div class="image-row">
+        <div class="image-row__item">
+          <img src="strategy as protocol screenshot.jpg" alt="Website">
+        </div>
+        <div class="image-row__item">
+          <img src="the new design system.jpg" alt="Presentation">
+        </div>
+        <div class="image-row__item">
+          <img src="transition.jpeg" alt="Document">
+        </div>
+      </div>
+
+      <p class="text-caption" style="text-align: center;">Same specification, three outputs</p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 22: WHAT AI CLOSES (AND WHAT IT DOESN'T)
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-22">
+    <div class="frame__corner frame__corner--tl">Act III: The Turn</div>
+    <div class="frame__corner frame__corner--tr">Honest Assessment</div>
+    <div class="frame__corner frame__corner--bl">22</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="text-align: center; max-width: 30ch;">The revolution isn't that we don't need designers. It's that designers can focus on what AI can't do.</h2>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>The Gap AI Closes</th>
+            <th>The Gap That Remains</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Design → Working code</td>
+            <td>Working code → Accessible code</td>
+          </tr>
+          <tr>
+            <td>Principles → Pixels</td>
+            <td>Pixels → Brand differentiation</td>
+          </tr>
+          <tr>
+            <td>One-off creation</td>
+            <td>Sustained governance</td>
+          </tr>
+          <tr>
+            <td>Individual builder</td>
+            <td>Cross-functional alignment</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 23: THE COLLAPSE
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-23">
+    <div class="frame__corner frame__corner--tl">Act III: The Turn</div>
+    <div class="frame__corner frame__corner--tr">The Collapse</div>
+    <div class="frame__corner frame__corner--bl">23</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <h2 class="text-title">The apparatus that grew up around the gap is now optional.</h2>
+
+        <!-- Faded cascade from slide 14 -->
+        <div class="cascade" style="opacity: 0.4; transform: scale(0.85); transform-origin: top left;">
+          <div class="cascade__item cascade__item--gray"><span>Design System Lead</span></div>
+          <div class="cascade__item cascade__item--gray"><span>Component Designers</span></div>
+          <div class="cascade__item cascade__item--gray"><span>Engineers</span></div>
+          <div class="cascade__item cascade__item--gray"><span>DesignOps</span></div>
+          <div class="cascade__item cascade__item--gray"><span>Governance</span></div>
+          <div class="cascade__item cascade__item--gray"><span>Documentation</span></div>
+        </div>
+      </div>
+      <div class="split__right" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div class="volt-dot"></div>
+        <p style="font-family: var(--font-body); font-weight: 600; margin-top: var(--space-sm);">One mind + AI</p>
+        <p class="text-caption" style="margin-top: var(--space-xs);">Same output</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 24: TIMELINE COMPLETE
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-24">
+    <div class="frame__corner frame__corner--tl">Act IV: The Prestige</div>
+    <div class="frame__corner frame__corner--tr">Timeline</div>
+    <div class="frame__corner frame__corner--bl">24</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h2 class="text-display">2025: The Return</h2>
+      <p class="text-lead" style="color: var(--color-volt); font-weight: 600;">Full circle.</p>
+
+      <svg class="timeline-circle" viewBox="0 0 200 200" style="width: 350px; height: 350px;">
+        <!-- Complete circle -->
+        <circle cx="100" cy="100" r="90" fill="none" stroke="black" stroke-width="2"/>
+
+        <!-- Return arc (dotted) -->
+        <path d="M 15 85 A 90 90 0 0 1 100 10" fill="none" stroke="#E2FF00" stroke-width="2" stroke-dasharray="4 4"/>
+
+        <!-- All markers -->
+        <circle cx="100" cy="10" r="5" fill="#888"/>
+        <text x="100" y="-8" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="600">1977</text>
+
+        <circle cx="190" cy="100" r="4" fill="#888"/>
+        <text x="205" y="105" font-family="DM Sans" font-size="9">2006</text>
+
+        <circle cx="150" cy="175" r="4" fill="#888"/>
+        <text x="165" y="185" font-family="DM Sans" font-size="9">2014</text>
+
+        <circle cx="50" cy="175" r="4" fill="#888"/>
+        <text x="30" y="190" font-family="DM Sans" font-size="9">2019</text>
+
+        <circle cx="15" cy="85" r="6" fill="#E2FF00"/>
+        <text x="-8" y="90" font-family="DM Sans" font-size="10" font-weight="600" fill="#E2FF00">2025</text>
+
+        <!-- "The Return" label on the dotted arc -->
+        <text x="45" y="35" font-family="DM Sans" font-size="9" fill="#E2FF00" font-style="italic">The Return</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 25: THE PRESTIGE (HERO)
+       ============================================ -->
+  <section class="slide slide--hero bg-volt" id="slide-25">
+    <div class="centered">
+      <h1 class="text-hero" style="text-align: center; max-width: 16ch;">We've returned to Alexander's original vision.</h1>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 26: FULL CIRCLE
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-26">
+    <div class="frame__corner frame__corner--tl">Act IV: The Prestige</div>
+    <div class="frame__corner frame__corner--tr">Full Circle</div>
+    <div class="frame__corner frame__corner--bl">26</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <div class="evidence">
+          <img src="pattern language.jpg" alt="A Pattern Language, 1977">
+        </div>
+        <p class="evidence__caption">A Pattern Language, 1977</p>
+      </div>
+      <div class="split__right">
+        <div class="evidence">
+          <img src="the new design system.jpg" alt="Design System, 2025">
+        </div>
+        <p class="evidence__caption">Design System, 2025</p>
+      </div>
+    </div>
+    <p class="text-lead" style="text-align: center; margin-top: var(--space-lg); max-width: 60ch; margin-left: auto; margin-right: auto;">
+      48 years apart. Same vision. <span class="highlight-volt">Finally possible.</span>
+    </p>
+  </section>
+
+  <!-- ============================================
+       SLIDE 27: THE IMPLICATIONS
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-27">
+    <div class="frame__corner frame__corner--tl">Act IV: The Prestige</div>
+    <div class="frame__corner frame__corner--tr">Implications</div>
+    <div class="frame__corner frame__corner--bl">27</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="split">
+      <div class="split__left">
+        <h2 class="text-title">This changes who can build — and what "design system" means.</h2>
+      </div>
+      <div class="split__right" style="display: flex; align-items: center; justify-content: center;">
+        <div class="ripple">
+          <div class="ripple__ring ripple__ring--outer"></div>
+          <div class="ripple__ring ripple__ring--middle"></div>
+          <div class="ripple__ring ripple__ring--inner"></div>
+          <div class="ripple__center">The gap closes</div>
+
+          <span class="ripple__label" style="right: -90px; top: 50%; transform: translateY(-50%);">How we think about tools</span>
+          <span class="ripple__label" style="right: -70px; top: 30%;">What design systems mean</span>
+          <span class="ripple__label" style="right: -40px; top: 65%;">Who can build</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 28: THE META-PROOF
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-28">
+    <div class="frame__corner frame__corner--tl">Act IV: The Prestige</div>
+    <div class="frame__corner frame__corner--tr">Meta-Proof</div>
+    <div class="frame__corner frame__corner--bl">28</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="text-align: center; max-width: 30ch;">The protocol made this possible. You're looking at it.</h2>
+
+      <div class="meta-compare">
+        <!-- Before -->
+        <div style="text-align: center; opacity: 0.5;">
+          <p style="font-weight: 600;"><a href="https://thenew.igorschwarzmann.com/p/strategy-as-protocol" target="_blank" style="color: inherit; text-decoration: underline;">Strategy-as-Protocol</a></p>
+          <p class="text-caption">Substack, last week</p>
+        </div>
+
+        <span style="font-size: 32px; color: var(--color-volt);">→</span>
+
+        <!-- After -->
+        <div style="text-align: center;">
+          <p style="font-weight: 700; font-size: var(--text-lead);">This Presentation</p>
+          <p class="text-caption"><span class="highlight-volt">My own system, this week</span></p>
+        </div>
+      </div>
+
+      <p class="text-lead" style="text-align: center; max-width: 55ch; opacity: 0.7;">
+        The essay described the theory. This demonstrates it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 29: CLOSING (HERO)
+       ============================================ -->
+  <section class="slide slide--hero bg-volt" id="slide-29">
+    <div class="centered">
+      <h1 class="text-hero" style="text-align: center; max-width: 18ch;">Last week's essay ran on Substack. This deck runs on my own system.</h1>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 30: THE NEW SKILL
+       ============================================ -->
+  <section class="slide slide--working bg-white frame" id="slide-30">
+    <div class="frame__corner frame__corner--tl">Coda</div>
+    <div class="frame__corner frame__corner--tr">The New Skill</div>
+    <div class="frame__corner frame__corner--bl">30</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="gap: var(--space-lg);">
+      <h2 class="text-title" style="text-align: center; max-width: 22ch;">Clear thinking becomes the implementation skill.</h2>
+
+      <div class="flow">
+        <div class="flow__step">Pattern Recognition</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">Clear Specification</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step">AI Execution</div>
+        <span class="flow__arrow">→</span>
+        <div class="flow__step flow__step--active">Output</div>
+      </div>
+
+      <p class="text-lead" style="text-align: center; max-width: 55ch; opacity: 0.7;">
+        The value moved upstream. Design systems become thought systems made executable.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 31: CODA
+       ============================================ -->
+  <section class="slide slide--working bg-blush frame" id="slide-31">
+    <div class="frame__corner frame__corner--tl">Coda</div>
+    <div class="frame__corner frame__corner--tr">What's Next</div>
+    <div class="frame__corner frame__corner--bl">31</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered" style="max-width: 700px; margin: 0 auto;">
+      <h2 class="text-title" style="text-align: center;">The experiment continues. This is the beginning, not the end.</h2>
+
+      <p class="text-lead" style="text-align: center; margin-top: var(--space-md);">
+        Show me version 2.0 in six months. That's the real test. Can AI handle maintenance, breaking changes, evolution?
+      </p>
+
+      <p class="text-lead" style="text-align: center; margin-top: var(--space-sm);">
+        I don't know yet. But I know Alexander's original vision — one mind, pattern recognition, usable output — is closer than it's been in <span class="highlight-volt">48 years</span>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SLIDE 32: END
+       ============================================ -->
+  <section class="slide bg-white" id="slide-32">
+    <div class="frame__corner frame__corner--bl">32</div>
+    <div class="frame__corner frame__corner--br">Igor Schwarzmann</div>
+
+    <div class="centered">
+      <h1 class="text-display">Igor Schwarzmann</h1>
+      <p class="text-lead" style="opacity: 0.7;">Culture. Technology. Pattern recognition.</p>
+      <p style="margin-top: var(--space-lg);">
+        <a href="https://igorschwarzmann.com" style="font-weight: 600; color: var(--color-black); text-decoration: none; border-bottom: 3px solid var(--color-volt); padding-bottom: 2px;">igorschwarzmann.com</a>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      const slides = document.querySelectorAll('.slide');
+      const currentScroll = window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      let currentIndex = 0;
+      slides.forEach((slide, index) => {
+        if (slide.offsetTop <= currentScroll + 100) {
+          currentIndex = index;
+        }
+      });
+
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        if (currentIndex < slides.length - 1) {
+          slides[currentIndex + 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (currentIndex > 0) {
+          slides[currentIndex - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.animate-in').forEach((el, i) => {
+            el.style.animationDelay = `${i * 0.1}s`;
+          });
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.slide').forEach(slide => {
+      observer.observe(slide);
+    });
+
+    // Nav color switching based on current slide background
+    const nav = document.getElementById('site-nav');
+    const darkSlides = document.querySelectorAll('.slide--dark, .bg-black, .bg-volt, .bg-signal, .bg-shift');
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+          const isDark = entry.target.classList.contains('slide--dark') ||
+                         entry.target.classList.contains('bg-black') ||
+                         entry.target.classList.contains('bg-volt') ||
+                         entry.target.classList.contains('bg-signal') ||
+                         entry.target.classList.contains('bg-shift');
+          if (isDark) {
+            nav.classList.add('on-dark');
+          } else {
+            nav.classList.remove('on-dark');
+          }
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.slide').forEach(slide => {
+      navObserver.observe(slide);
+    });
+  </script>
+
+</body>
+</html>
