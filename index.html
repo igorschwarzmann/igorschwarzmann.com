@@ -206,25 +206,29 @@
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .hero__statement:nth-child(1):hover {
+    .hero__statement:nth-child(1):hover,
+    .hero__statement:nth-child(1).active {
       color: var(--color-volt);
       transform: translateX(8px);
       text-shadow: 0 0 40px rgba(226, 255, 0, 0.3);
     }
 
-    .hero__statement:nth-child(2):hover {
+    .hero__statement:nth-child(2):hover,
+    .hero__statement:nth-child(2).active {
       color: var(--color-signal);
       transform: translateX(8px);
       text-shadow: 0 0 40px rgba(0, 255, 0, 0.3);
     }
 
-    .hero__statement:nth-child(3):hover {
+    .hero__statement:nth-child(3):hover,
+    .hero__statement:nth-child(3).active {
       color: var(--color-volt);
       transform: translateX(8px);
       text-shadow: 0 0 40px rgba(226, 255, 0, 0.3);
     }
 
-    .hero__statement:nth-child(4):hover {
+    .hero__statement:nth-child(4):hover,
+    .hero__statement:nth-child(4).active {
       color: var(--color-shift);
       transform: translateX(8px);
       text-shadow: 0 0 40px rgba(255, 0, 255, 0.3);
@@ -456,6 +460,30 @@
     </div>
   </footer>
 
+  <script>
+    // Auto-cycle through statements starting with "Systems & Narratives"
+    const statements = document.querySelectorAll('.hero__statement');
+    // Cycle order: statement 3 (index 2), 4 (index 3), 1 (index 0), 2 (index 1)
+    const cycleOrder = [2, 3, 0, 1];
+    let currentIndex = 0;
+
+    function cycleStatements() {
+      // Remove active class from all statements
+      statements.forEach(statement => statement.classList.remove('active'));
+
+      // Add active class to current statement
+      statements[cycleOrder[currentIndex]].classList.add('active');
+
+      // Move to next statement
+      currentIndex = (currentIndex + 1) % cycleOrder.length;
+    }
+
+    // Start the cycle after initial page animations complete (around 1.5s)
+    setTimeout(() => {
+      cycleStatements(); // Activate first statement immediately
+      setInterval(cycleStatements, 2000); // Change every 2 seconds
+    }, 1500);
+  </script>
 
 </body>
 </html>
