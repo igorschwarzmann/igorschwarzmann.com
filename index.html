@@ -287,6 +287,121 @@
       animation: fadeIn 0.8s var(--ease-out-expo) 0.9s forwards;
     }
 
+    /* ===== WORK OVERVIEW ===== */
+    .work-overview {
+      background: var(--color-black);
+      padding: var(--space-lg);
+      position: relative;
+    }
+
+    .work-overview__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-lg);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .work-overview__column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .work-overview__header {
+      font-family: var(--font-mono);
+      font-size: var(--text-caption);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding-bottom: var(--space-xs);
+      margin-bottom: var(--space-sm);
+      position: relative;
+    }
+
+    .work-overview__header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: currentColor;
+    }
+
+    .work-overview__header--work {
+      color: var(--color-volt);
+    }
+
+    .work-overview__header--writing {
+      color: var(--color-signal);
+    }
+
+    .work-overview__header--podcast {
+      color: var(--color-shift);
+    }
+
+    .work-overview__entry {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s var(--ease-out-expo) forwards;
+    }
+
+    .work-overview__entry:nth-child(2) { animation-delay: 0.1s; }
+    .work-overview__entry:nth-child(3) { animation-delay: 0.15s; }
+    .work-overview__entry:nth-child(4) { animation-delay: 0.2s; }
+    .work-overview__entry:nth-child(5) { animation-delay: 0.25s; }
+    .work-overview__entry:nth-child(6) { animation-delay: 0.3s; }
+    .work-overview__entry:nth-child(7) { animation-delay: 0.35s; }
+    .work-overview__entry:nth-child(8) { animation-delay: 0.4s; }
+
+    .work-overview__tags {
+      font-family: var(--font-mono);
+      font-size: clamp(11px, 1vw, 13px);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.3;
+    }
+
+    .work-overview__main {
+      font-family: var(--font-body);
+      font-size: clamp(14px, 1.2vw, 16px);
+      line-height: 1.4;
+      color: var(--color-white);
+    }
+
+    .work-overview__main a {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .work-overview__main a:hover {
+      text-decoration-color: var(--color-volt);
+      text-decoration-thickness: 2px;
+    }
+
+    .work-overview__context {
+      font-family: var(--font-body);
+      font-size: clamp(12px, 1vw, 14px);
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(226, 255, 0, 0.08);
+      padding: 4px 8px;
+      border-radius: 2px;
+      margin-left: -8px;
+    }
+
+    /* Color variations for tags - column-based */
+    .work-overview__column:nth-child(1) .work-overview__tags { color: var(--color-volt); }
+    .work-overview__column:nth-child(2) .work-overview__tags { color: var(--color-signal); }
+    .work-overview__column:nth-child(3) .work-overview__tags { color: var(--color-shift); }
+
     /* ===== IMPRESSUM ===== */
     .impressum {
       background: var(--color-black);
@@ -377,6 +492,21 @@
         padding: var(--space-sm) 0;
       }
 
+      .work-overview {
+        padding: var(--space-md);
+      }
+
+      .work-overview__grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+      }
+
+      .work-overview__header {
+        font-size: clamp(13px, 1.5vw, 15px);
+        padding-bottom: var(--space-sm);
+        margin-bottom: var(--space-md);
+      }
+
       .impressum {
         padding: var(--space-xs) var(--space-sm);
       }
@@ -434,7 +564,7 @@
 
     <div class="hero__statements">
       <h1 class="hero__statement">Advisor & Strategist</h1>
-      <p class="hero__statement">Culture × Tech × AI</p>
+      <p class="hero__statement">Culture × Tech</p>
       <p class="hero__statement">Systems & Narratives</p>
       <p class="hero__statement">For What's Coming</p>
 
@@ -449,6 +579,130 @@
     <div class="manifesto-strip__wrapper">
       <p class="manifesto-strip__text">EVERYTHING TO SOMEONE NOT SOMETHING TO EVERYONE</p>
       <p class="manifesto-strip__text">EVERYTHING TO SOMEONE NOT SOMETHING TO EVERYONE</p>
+    </div>
+  </section>
+
+  <!-- WORK OVERVIEW -->
+  <section class="work-overview">
+    <div class="work-overview__grid">
+
+      <!-- Work Column -->
+      <div class="work-overview__column">
+        <h2 class="work-overview__header work-overview__header--work">Work</h2>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Category Entry × AI Strategy</div>
+          <div class="work-overview__main">Major European Consumer Appliance Company</div>
+          <div class="work-overview__context">Lead Strategy & Research · Germany</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Brand Strategy × AI & R&D</div>
+          <div class="work-overview__main">Toys Manufacturer</div>
+          <div class="work-overview__context">Lead R&D + Strategy · Germany/China</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Local AI × Open Source</div>
+          <div class="work-overview__main">Berlin District Government</div>
+          <div class="work-overview__context">Strategy & Prototyping · Germany</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Category Growth × Cultural Strategy</div>
+          <div class="work-overview__main">Global Vision Care Company (US Market)</div>
+          <div class="work-overview__context">Lead Research & Strategy · United States</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Cultural Trends × Gen Z</div>
+          <div class="work-overview__main">European Beverage Company</div>
+          <div class="work-overview__context">Senior Cultural Advisor · Germany</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Brand Strategy × Wellness</div>
+          <div class="work-overview__main">American Luxury Automotive Brand</div>
+          <div class="work-overview__context">Lead Strategy & Cultural Research · United States</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Foresight × Innovation</div>
+          <div class="work-overview__main">Global Pharmaceutical Company</div>
+          <div class="work-overview__context">Sprint Lead · Denmark</div>
+        </div>
+      </div>
+
+      <!-- Writing Column -->
+      <div class="work-overview__column">
+        <h2 class="work-overview__header work-overview__header--writing">Writing</h2>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Strategy × AI × Organizational Design</div>
+          <div class="work-overview__main"><a href="#">Strategy-as-Protocol</a></div>
+          <div class="work-overview__context">Making Strategy Executable, Transparent, and Creative</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Strategic Planning × Knowledge States</div>
+          <div class="work-overview__main"><a href="#">Present Archaeology</a></div>
+          <div class="work-overview__context">Rethinking Knowledge States in Strategic Planning</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Culture × Entertainment × Niche Markets</div>
+          <div class="work-overview__main"><a href="#">The MUBI Moment</a></div>
+          <div class="work-overview__context">Why Sequoia bet $100M on the Death of Mainstream</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">AI × Media × Foresight</div>
+          <div class="work-overview__main"><a href="#">Synthetic Media</a></div>
+          <div class="work-overview__context">What it is and why it's important</div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Futures Thinking × VUCA</div>
+          <div class="work-overview__main"><a href="#">Futures Thinking in VUCA Times</a></div>
+          <div class="work-overview__context">Our Approach</div>
+        </div>
+      </div>
+
+      <!-- Podcast Column -->
+      <div class="work-overview__column">
+        <h2 class="work-overview__header work-overview__header--podcast">Podcast</h2>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Culture × Niche Markets</div>
+          <div class="work-overview__main">Follow the Rabbit S04E15</div>
+          <div class="work-overview__context"><a href="#">Niche is the New Mainstream</a></div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Strategy × Customer Proximity</div>
+          <div class="work-overview__main">Follow the Rabbit S04E14</div>
+          <div class="work-overview__context"><a href="#">Everything to Someone</a></div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Cultural Fragmentation</div>
+          <div class="work-overview__main">Follow the Rabbit S04E13</div>
+          <div class="work-overview__context"><a href="#">The Hidden Mainstream</a></div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">AI × Organizational Change</div>
+          <div class="work-overview__main">Follow the Rabbit S04E12</div>
+          <div class="work-overview__context"><a href="#">AI Forces Transparency</a></div>
+        </div>
+
+        <div class="work-overview__entry">
+          <div class="work-overview__tags">Foresight × Futures</div>
+          <div class="work-overview__main">Follow the Rabbit S04E11</div>
+          <div class="work-overview__context"><a href="#">Present Archaeology</a></div>
+        </div>
+      </div>
+
     </div>
   </section>
 
